@@ -17,6 +17,33 @@ decision follows from those three facts.
 
 ---
 
+## Team
+
+| Name | ID |
+|---|---|
+| Vardaan Sharma | 1016A |
+| Ved Vishal | 1016B |
+| Aditi Sharda | 1016C |
+| Bhavik Katal | 1016D |
+| Himank | 1016E |
+
+Built for SFHS C.O.D.E Hack 7.0, 2026 — theme: AI for Good / AI for Sustainable Agriculture.
+
+---
+
+## AI usage disclosure
+
+In line with the hackathon's AI usage policy, here is what was used, for what, and how much:
+
+| Tool | Used for | Extent |
+|---|---|---|
+| **Claude Code** | Primary coding agent — feature implementation (frontend screens, Firebase Functions backend, i18n bundles), debugging, refactors, this README, the AI-usage disclosure and team sections, and the pitch presentation (`KrishiSathi_Pitch.pptx`, including real in-app screenshots and design). | Extensive — main development and documentation tool used throughout the build. |
+| **Antigravity** (its AI model) | Secondary debugging assistant for specific issues during development. | Targeted — debugging support only. |
+
+All architectural decisions, product/UX choices (the traffic-light system, voice-first navigation, rule-based scheme eligibility instead of LLM output, offline-first design), and final review of generated code were made by the team.
+
+---
+
 ## What it does
 
 ### Voice-first navigation
@@ -154,6 +181,12 @@ trustworthiness:
   carries no arrival-volume column on every row, so a wide min–max band at a
   yard stands in for heavy mixed arrivals. Wire in stored history for a true
   day-on-day delta.
+- **Live Agmarknet prices need a data.gov.in key, and that registration is not
+  instant.** Unlike most open-data signups, data.gov.in requires identity
+  verification (Aadhaar / PAN / Driving License via Jan Parichay), not just an
+  email or mobile OTP. Budget real time for it, or don't — `DATA_GOV_API_KEY`
+  is optional and its absence is a supported first-class state: the backend
+  returns 503 and the client falls back to curated mandi data automatically.
 
 The Gemini prompts enforce agronomic safety rules: never recommend a pesticide
 banned in India, always state protective equipment and the pre-harvest interval,
