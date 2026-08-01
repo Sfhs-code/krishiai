@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { NavLink, Outlet, useNavigate } from 'react-router-dom';
-import { Home, Sprout, Bot, Store, LayoutGrid, User as UserIcon, WifiOff, Volume2, VolumeX } from 'lucide-react';
+import { Home, Sprout, Bot, Store, LayoutGrid, User as UserIcon, WifiOff, Volume2, VolumeX, Moon, Sun } from 'lucide-react';
 import { useApp } from '../state/AppContext';
 import { LANGUAGES } from '../i18n';
 import { VoiceMic } from './VoiceMic';
@@ -52,6 +52,23 @@ function LanguagePicker() {
   );
 }
 
+function ThemeToggle() {
+  const { dark, setDark } = useApp();
+  const { t } = useTranslation();
+  return (
+    <button
+      type="button"
+      onClick={() => setDark(!dark)}
+      aria-label={dark ? (t('profile.lightMode') || 'Light mode') : (t('profile.darkMode') || 'Dark mode')}
+      className={`press flex h-9 w-9 items-center justify-center rounded-full border ${
+        dark ? 'border-primary bg-primary-soft text-primary' : 'border-border bg-card text-muted-foreground'
+      }`}
+    >
+      {dark ? <Sun size={17} aria-hidden /> : <Moon size={17} aria-hidden />}
+    </button>
+  );
+}
+
 function TopBar() {
   const { t } = useTranslation();
   const navigate = useNavigate();
@@ -90,6 +107,8 @@ function TopBar() {
           >
             {autoSpeak ? <Volume2 size={17} aria-hidden /> : <VolumeX size={17} aria-hidden />}
           </button>
+          
+          <ThemeToggle />
 
           <LanguagePicker />
 
@@ -157,14 +176,111 @@ function BottomNav() {
   );
 }
 
+function DesktopSidebar() {
+  const { t } = useTranslation();
+  const { isOnline, autoSpeak, setAutoSpeak } = useApp();
+
+  return (
+    <aside className="sticky top-0 flex h-dvh w-[260px] shrink-0 flex-col border-r border-border bg-card/40 px-5 py-6 backdrop-blur-xl">
+      <div className="mb-8 flex items-center justify-between">
+        <NavLink to="/" className="flex min-w-0 items-center gap-2">
+          <span className="flex h-9 w-9 items-center justify-center rounded-full bg-leaf text-lg shadow-glass" aria-hidden>
+            🌿
+          </span>
+          <span className="min-w-0">
+            <span className="block truncate font-display text-base font-extrabold leading-tight">{t('appName')}</span>
+            <span className="flex items-center gap-1 text-[11px] leading-tight text-muted-foreground">
+              {isOnline ? (
+                t('offlineReady')
+              ) : (
+                <>
+                  <WifiOff size={11} aria-hidden /> {t('offline')}
+                </>
+              )}
+            </span>
+          </span>
+        </NavLink>
+      </div>
+
+      <nav aria-label="Desktop Main" className="flex flex-col gap-1">
+        {NAV.map((n) => {
+          const Icon = n.icon;
+          return (
+            <NavLink
+              key={n.to}
+              to={n.to}
+              end={n.end}
+              className={({ isActive }) =>
+                `press relative flex items-center gap-3 rounded-2xl px-4 py-3 text-[13px] font-bold tracking-wide transition-all duration-300 ${
+                  isActive
+                    ? 'bg-primary text-primary-foreground shadow-glass'
+                    : 'text-muted-foreground hover:bg-secondary/80 hover:text-foreground'
+                }`
+              }
+            >
+              {({ isActive }) => (
+                <>
+                  <Icon
+                    className={`size-[18px] transition-transform duration-300 ${isActive ? 'scale-110' : ''}`}
+                    aria-hidden="true"
+                  />
+                  <span>{t(n.key)}</span>
+                </>
+              )}
+            </NavLink>
+          );
+        })}
+      </nav>
+
+      <div className="flex-1" />
+
+      <div className="border-t border-border pt-4 flex flex-col gap-4">
+        <div className="flex items-center gap-2">
+          <button
+            type="button"
+            onClick={() => setAutoSpeak(!autoSpeak)}
+            aria-label={autoSpeak ? 'Turn off audio' : 'Turn on audio'}
+            aria-pressed={autoSpeak}
+            className={`press flex h-9 w-9 items-center justify-center rounded-full border ${
+              autoSpeak ? 'border-primary bg-primary-soft text-primary' : 'border-border bg-card text-muted-foreground'
+            }`}
+          >
+            {autoSpeak ? <Volume2 size={17} aria-hidden /> : <VolumeX size={17} aria-hidden />}
+          </button>
+          <ThemeToggle />
+          <LanguagePicker />
+        </div>
+      </div>
+    </aside>
+  );
+}
+
 export function AppShell() {
   return (
-    <div className="min-h-dvh">
-      <TopBar />
-      <main className="mx-auto max-w-md px-4 pb-32 pt-4">
-        <Outlet />
-      </main>
-      <BottomNav />
-    </div>
+    <>
+      {/* Mobile Layout */}
+      <div className="md:hidden min-h-dvh flex flex-col">
+        <TopBar />
+        <main className="mx-auto max-w-md w-full px-4 pb-32 pt-4 flex-1">
+          <Outlet />
+        </main>
+        <BottomNav />
+      </div>
+
+      {/* Desktop Layout */}
+      <div className="hidden md:flex min-h-dvh">
+        <DesktopSidebar />
+        <main className="flex-1 min-w-0 overflow-y-auto">
+          <div className="mx-auto w-full max-w-2xl px-8 py-8 relative">
+            <div className="absolute top-8 right-8">
+              <div className="w-[120px]">
+                 <VoiceMic />
+              </div>
+            </div>
+            <Outlet />
+          </div>
+        </main>
+      </div>
+    </>
   );
 }

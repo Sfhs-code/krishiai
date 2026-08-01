@@ -251,6 +251,8 @@ export const hi = {
       voiceGuide: 'आवाज़ गाइड',
       voiceGuideOn: 'ऑटो-आवाज़ चालू',
       voiceGuideOff: 'ऑटो-आवाज़ बंद',
+      darkMode: 'डार्क मोड',
+      lightMode: 'लाइट मोड',
     },
 
     sosScreen: {

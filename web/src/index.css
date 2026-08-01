@@ -33,6 +33,34 @@
     --shadow-float: 0 18px 44px -18px oklch(40% 0.1 150 / 0.34);
   }
 
+  .dark {
+    --background: oklch(14% 0.015 155);
+    --foreground: oklch(92% 0.008 145);
+    --card: oklch(17% 0.018 155);
+    --card-foreground: oklch(92% 0.008 145);
+    --primary: oklch(62% 0.16 152);
+    --primary-foreground: oklch(10% 0.02 145);
+    --primary-soft: oklch(22% 0.05 152);
+    --secondary: oklch(20% 0.018 155);
+    --secondary-foreground: oklch(78% 0.012 150);
+    --muted: oklch(20% 0.015 152);
+    --muted-foreground: oklch(58% 0.018 150);
+    --accent: oklch(22% 0.03 148);
+    --accent-foreground: oklch(82% 0.02 145);
+    --destructive: oklch(62% 0.2 22);
+    --destructive-foreground: oklch(99% 0.01 145);
+    --warning: oklch(72% 0.14 75);
+    --border: oklch(25% 0.018 152);
+    --input: oklch(22% 0.018 150);
+    --ring: oklch(62% 0.16 152);
+    --glass: oklch(18% 0.018 155 / 0.75);
+    --glass-border: oklch(35% 0.025 150 / 0.5);
+    --gradient-sky: linear-gradient(170deg, oklch(22% 0.06 148 / 0.9) 0%, oklch(18% 0.05 200 / 0.7) 100%);
+    --gradient-leaf: linear-gradient(135deg, oklch(55% 0.15 152), oklch(65% 0.16 135));
+    --shadow-glass: 0 1px 1px oklch(0% 0 0 / 0.18), 0 12px 32px -12px oklch(0% 0 0 / 0.5);
+    --shadow-float: 0 18px 44px -18px oklch(0% 0 0 / 0.6);
+  }
+
   html {
     -webkit-text-size-adjust: 100%;
     -webkit-tap-highlight-color: transparent;

@@ -50,6 +50,8 @@ interface AppState {
   hush: () => void;
   locating: boolean;
   useMyLocation: () => Promise<void>;
+  dark: boolean;
+  setDark: (v: boolean) => void;
 }
 
 const Ctx = createContext<AppState | null>(null);
@@ -65,21 +67,30 @@ export function AppProvider({ children }: { children: ReactNode }) {
   const [isOnline, setIsOnline] = useState(navigator.onLine !== false);
   const [autoSpeak, setAutoSpeakState] = useState(true);
   const [locating, setLocating] = useState(false);
+  const [dark, setDarkState] = useState(false);
   const primed = useRef(false);
 
   /* -------------------------------------------------- hydrate from cache */
   useEffect(() => {
     void (async () => {
-      const [p, c, e, a] = await Promise.all([
+      const [p, c, e, a, d] = await Promise.all([
         readCache<FarmProfile>('profile'),
         readCache<Crop[]>('crops'),
         readCache<Expense[]>('expenses'),
         readCache<boolean>('autoSpeak'),
+        readCache<boolean>('dark'),
       ]);
       if (p?.value) setProfile({ ...DEFAULT_PROFILE, ...p.value });
       if (c?.value?.length) setCropsState(c.value);
       if (e?.value?.length) setExpenses(e.value);
       if (a && typeof a.value === 'boolean') setAutoSpeakState(a.value);
+      
+      let initialDark = false;
+      if (d && typeof d.value === 'boolean') {
+         initialDark = d.value;
+      }
+      setDarkState(initialDark);
+      document.documentElement.classList.toggle('dark', initialDark);
     })();
   }, []);
 
@@ -174,6 +185,12 @@ export function AppProvider({ children }: { children: ReactNode }) {
     if (!v) stopSpeaking();
   }, []);
 
+  const setDark = useCallback((v: boolean) => {
+    setDarkState(v);
+    void writeCache('dark', v);
+    document.documentElement.classList.toggle('dark', v);
+  }, []);
+
   const say = useCallback(
     (text: string, opts?: { force?: boolean }) => {
       if (!autoSpeak && !opts?.force) return;
@@ -220,6 +237,8 @@ export function AppProvider({ children }: { children: ReactNode }) {
       hush: stopSpeaking,
       locating,
       useMyLocation,
+      dark,
+      setDark,
     }),
     [
       user,
@@ -238,6 +257,8 @@ export function AppProvider({ children }: { children: ReactNode }) {
       say,
       locating,
       useMyLocation,
+      dark,
+      setDark,
     ],
   );
 

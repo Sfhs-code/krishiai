@@ -251,6 +251,8 @@ export const en = {
       voiceGuide: 'Voice guide',
       voiceGuideOn: 'Auto-play audio on',
       voiceGuideOff: 'Auto-play audio off',
+      darkMode: 'Dark mode',
+      lightMode: 'Light mode',
     },
 
     sosScreen: {
