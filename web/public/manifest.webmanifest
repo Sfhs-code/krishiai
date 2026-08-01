@@ -1,0 +1,24 @@
+{
+  "name": "KrishiSathi — Voice-first farming companion",
+  "short_name": "KrishiSathi",
+  "description": "Voice-first, offline-ready AI companion for farmers: weather, disease scanning, counterfeit input checks, mandi prices and government schemes.",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#f5faf6",
+  "theme_color": "#1f7a4d",
+  "lang": "en-IN",
+  "categories": ["productivity", "utilities", "agriculture"],
+  "icons": [
+    { "src": "/favicon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any" },
+    { "src": "/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ],
+  "shortcuts": [
+    { "name": "Disease scan", "url": "/tools/disease" },
+    { "name": "Mandi prices", "url": "/mandi" },
+    { "name": "Emergency SOS", "url": "/tools/sos" }
+  ]
+}

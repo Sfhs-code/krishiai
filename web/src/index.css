@@ -1,0 +1,110 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --radius: 1.375rem;
+    --background: oklch(98.5% 0.008 145);
+    --foreground: oklch(23% 0.03 155);
+    --card: oklch(99.7% 0.004 145);
+    --card-foreground: oklch(23% 0.03 155);
+    --primary: oklch(53% 0.14 152);
+    --primary-foreground: oklch(99% 0.01 145);
+    --primary-soft: oklch(93% 0.04 152);
+    --secondary: oklch(95% 0.02 150);
+    --secondary-foreground: oklch(32% 0.05 155);
+    --muted: oklch(95.5% 0.012 150);
+    --muted-foreground: oklch(53% 0.02 155);
+    --accent: oklch(92% 0.05 148);
+    --accent-foreground: oklch(30% 0.06 155);
+    --destructive: oklch(58% 0.2 22);
+    --destructive-foreground: oklch(99% 0.01 145);
+    --warning: oklch(75% 0.14 75);
+    --warning-foreground: oklch(30% 0.08 75);
+    --border: oklch(91% 0.012 150);
+    --input: oklch(91% 0.012 150);
+    --ring: oklch(53% 0.14 152);
+    --glass: oklch(100% 0 0 / 0.62);
+    --glass-border: oklch(100% 0 0 / 0.7);
+    --gradient-sky: linear-gradient(170deg, oklch(95% 0.05 200) 0%, oklch(97% 0.03 160) 42%, oklch(98.5% 0.008 145) 100%);
+    --gradient-leaf: linear-gradient(135deg, oklch(60% 0.15 152), oklch(72% 0.16 135));
+    --shadow-glass: 0 1px 1px oklch(40% 0.05 150 / 0.04), 0 12px 32px -12px oklch(40% 0.08 150 / 0.22);
+    --shadow-float: 0 18px 44px -18px oklch(40% 0.1 150 / 0.34);
+  }
+
+  html {
+    -webkit-text-size-adjust: 100%;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  body {
+    @apply bg-background text-foreground font-sans antialiased;
+    background-image: var(--gradient-sky);
+    background-attachment: fixed;
+    overscroll-behavior-y: none;
+  }
+
+  h1, h2, h3, h4 {
+    @apply font-display tracking-tight;
+  }
+
+  button, a, [role='button'] {
+    touch-action: manipulation;
+  }
+
+  ::-webkit-scrollbar {
+    width: 0;
+    height: 0;
+  }
+}
+
+@layer components {
+  .glass-card {
+    background: var(--glass);
+    border: 1px solid var(--glass-border);
+    box-shadow: var(--shadow-glass);
+    backdrop-filter: blur(18px) saturate(150%);
+    -webkit-backdrop-filter: blur(18px) saturate(150%);
+    @apply rounded-lg;
+  }
+
+  .solid-card {
+    @apply rounded-lg border border-border bg-card shadow-glass;
+  }
+
+  .bg-leaf {
+    background-image: var(--gradient-leaf);
+  }
+
+  .press {
+    @apply transition-transform duration-150 active:scale-[0.97];
+  }
+
+  .skeleton {
+    @apply relative overflow-hidden rounded-md bg-muted;
+  }
+  .skeleton::after {
+    content: '';
+    @apply absolute inset-0 -translate-x-full animate-shimmer;
+    background-image: linear-gradient(90deg, transparent, oklch(100% 0 0 / 0.55), transparent);
+  }
+
+  .no-scrollbar {
+    scrollbar-width: none;
+  }
+
+  .safe-bottom {
+    padding-bottom: max(env(safe-area-inset-bottom), 0.25rem);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}

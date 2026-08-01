@@ -1,0 +1,252 @@
+import {
+  createContext,
+  useCallback,
+  useContext,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+  type ReactNode,
+} from 'react';
+import { useTranslation } from 'react-i18next';
+import { setLanguage, savedLanguage } from '../i18n';
+import { readCache, writeCache, drainOutbox } from '../lib/cache';
+import { DEMO_CROPS, DEMO_EXPENSES } from '../lib/demoData';
+import { fetchFarmProfile, pushDiaryEntry, syncFarmProfile, watchAuth, type User } from '../lib/firebase';
+import { speak as ttsSpeak, stopSpeaking, primeSpeech } from '../lib/speech';
+import type { Crop, Expense, FarmProfile, LangCode } from '../lib/types';
+
+const DEFAULT_PROFILE: FarmProfile = {
+  name: 'Farmer',
+  phone: '',
+  village: 'Ozar',
+  district: 'Nashik',
+  state: 'Maharashtra',
+  lat: 19.9975,
+  lon: 73.7898,
+  landAcre: 4.5,
+  soilType: 'Black cotton',
+  irrigation: 'Drip + borewell',
+  language: 'en',
+};
+
+interface AppState {
+  user: User | null;
+  authReady: boolean;
+  profile: FarmProfile;
+  updateProfile: (patch: Partial<FarmProfile>) => void;
+  crops: Crop[];
+  setCrops: (c: Crop[]) => void;
+  expenses: Expense[];
+  addExpense: (e: Omit<Expense, 'id'>) => void;
+  lang: LangCode;
+  changeLanguage: (c: LangCode) => void;
+  isOnline: boolean;
+  /** Auto-play spoken summaries — on by default, this is a voice-first app. */
+  autoSpeak: boolean;
+  setAutoSpeak: (v: boolean) => void;
+  /** Speak text in the active language, respecting the autoSpeak preference. */
+  say: (text: string, opts?: { force?: boolean }) => void;
+  hush: () => void;
+  locating: boolean;
+  useMyLocation: () => Promise<void>;
+}
+
+const Ctx = createContext<AppState | null>(null);
+
+export function AppProvider({ children }: { children: ReactNode }) {
+  const { i18n } = useTranslation();
+  const [user, setUser] = useState<User | null>(null);
+  const [authReady, setAuthReady] = useState(false);
+  const [profile, setProfile] = useState<FarmProfile>(DEFAULT_PROFILE);
+  const [crops, setCropsState] = useState<Crop[]>(DEMO_CROPS);
+  const [expenses, setExpenses] = useState<Expense[]>(DEMO_EXPENSES);
+  const [lang, setLang] = useState<LangCode>(savedLanguage());
+  const [isOnline, setIsOnline] = useState(navigator.onLine !== false);
+  const [autoSpeak, setAutoSpeakState] = useState(true);
+  const [locating, setLocating] = useState(false);
+  const primed = useRef(false);
+
+  /* -------------------------------------------------- hydrate from cache */
+  useEffect(() => {
+    void (async () => {
+      const [p, c, e, a] = await Promise.all([
+        readCache<FarmProfile>('profile'),
+        readCache<Crop[]>('crops'),
+        readCache<Expense[]>('expenses'),
+        readCache<boolean>('autoSpeak'),
+      ]);
+      if (p?.value) setProfile({ ...DEFAULT_PROFILE, ...p.value });
+      if (c?.value?.length) setCropsState(c.value);
+      if (e?.value?.length) setExpenses(e.value);
+      if (a && typeof a.value === 'boolean') setAutoSpeakState(a.value);
+    })();
+  }, []);
+
+  /* ------------------------------------------------------- connectivity */
+  useEffect(() => {
+    const on = () => {
+      setIsOnline(true);
+      // Replay anything the farmer did while offline.
+      void drainOutbox(async (action) => {
+        if (action.type === 'diary' && user) {
+          await pushDiaryEntry(user.uid, action.payload as Record<string, unknown>);
+        }
+      });
+    };
+    const off = () => setIsOnline(false);
+    window.addEventListener('online', on);
+    window.addEventListener('offline', off);
+    return () => {
+      window.removeEventListener('online', on);
+      window.removeEventListener('offline', off);
+    };
+  }, [user]);
+
+  /* --------------------------------------------------------------- auth */
+  useEffect(() => {
+    const unsub = watchAuth((u) => {
+      setUser(u);
+      setAuthReady(true);
+      if (u) {
+        void fetchFarmProfile<FarmProfile>(u.uid).then((remote) => {
+          if (remote) setProfile((prev) => ({ ...prev, ...remote }));
+        });
+      }
+    });
+    return unsub;
+  }, []);
+
+  /* --------------------------------- prime speech on first user gesture */
+  useEffect(() => {
+    const handler = () => {
+      if (primed.current) return;
+      primed.current = true;
+      primeSpeech();
+    };
+    window.addEventListener('pointerdown', handler, { once: true });
+    window.addEventListener('keydown', handler, { once: true });
+    return () => {
+      window.removeEventListener('pointerdown', handler);
+      window.removeEventListener('keydown', handler);
+    };
+  }, []);
+
+  const updateProfile = useCallback(
+    (patch: Partial<FarmProfile>) => {
+      setProfile((prev) => {
+        const next = { ...prev, ...patch };
+        void writeCache('profile', next);
+        if (user) void syncFarmProfile(user.uid, next);
+        return next;
+      });
+    },
+    [user],
+  );
+
+  const setCrops = useCallback((c: Crop[]) => {
+    setCropsState(c);
+    void writeCache('crops', c);
+  }, []);
+
+  const addExpense = useCallback((e: Omit<Expense, 'id'>) => {
+    setExpenses((prev) => {
+      const next = [{ ...e, id: `x${Date.now()}` }, ...prev];
+      void writeCache('expenses', next);
+      return next;
+    });
+  }, []);
+
+  const changeLanguage = useCallback(
+    (code: LangCode) => {
+      stopSpeaking();
+      setLang(code);
+      setLanguage(code);
+      void i18n.changeLanguage(code);
+      updateProfile({ language: code });
+    },
+    [i18n, updateProfile],
+  );
+
+  const setAutoSpeak = useCallback((v: boolean) => {
+    setAutoSpeakState(v);
+    void writeCache('autoSpeak', v);
+    if (!v) stopSpeaking();
+  }, []);
+
+  const say = useCallback(
+    (text: string, opts?: { force?: boolean }) => {
+      if (!autoSpeak && !opts?.force) return;
+      ttsSpeak(text, lang);
+    },
+    [autoSpeak, lang],
+  );
+
+  const useMyLocation = useCallback(async () => {
+    if (!('geolocation' in navigator)) return;
+    setLocating(true);
+    try {
+      const pos = await new Promise<GeolocationPosition>((resolve, reject) => {
+        navigator.geolocation.getCurrentPosition(resolve, reject, {
+          enableHighAccuracy: false,
+          timeout: 12_000,
+          maximumAge: 10 * 60 * 1000,
+        });
+      });
+      updateProfile({ lat: pos.coords.latitude, lon: pos.coords.longitude });
+    } catch {
+      /* permission denied or unavailable — keep the saved location */
+    } finally {
+      setLocating(false);
+    }
+  }, [updateProfile]);
+
+  const value = useMemo<AppState>(
+    () => ({
+      user,
+      authReady,
+      profile,
+      updateProfile,
+      crops,
+      setCrops,
+      expenses,
+      addExpense,
+      lang,
+      changeLanguage,
+      isOnline,
+      autoSpeak,
+      setAutoSpeak,
+      say,
+      hush: stopSpeaking,
+      locating,
+      useMyLocation,
+    }),
+    [
+      user,
+      authReady,
+      profile,
+      updateProfile,
+      crops,
+      setCrops,
+      expenses,
+      addExpense,
+      lang,
+      changeLanguage,
+      isOnline,
+      autoSpeak,
+      setAutoSpeak,
+      say,
+      locating,
+      useMyLocation,
+    ],
+  );
+
+  return <Ctx.Provider value={value}>{children}</Ctx.Provider>;
+}
+
+// eslint-disable-next-line react-refresh/only-export-components
+export function useApp(): AppState {
+  const v = useContext(Ctx);
+  if (!v) throw new Error('useApp must be used inside <AppProvider>');
+  return v;
+}
