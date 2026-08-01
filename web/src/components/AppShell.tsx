@@ -75,8 +75,8 @@ function TopBar() {
   const { isOnline, autoSpeak, setAutoSpeak } = useApp();
 
   return (
-    <header className="sticky top-0 z-40 border-b border-glass-border bg-[oklch(100%_0_0_/_0.72)] backdrop-blur-xl">
-      <div className="mx-auto flex max-w-md items-center gap-2 px-4 py-3">
+    <header className="sticky top-0 z-40 px-3 pt-3">
+      <div className="glass-card mx-auto flex max-w-md items-center gap-2 rounded-2xl px-3 py-2.5">
         <NavLink to="/" className="flex min-w-0 items-center gap-2">
           <span className="flex h-9 w-9 items-center justify-center rounded-full bg-leaf text-lg shadow-glass" aria-hidden>
             🌿
@@ -164,8 +164,8 @@ function BottomNav() {
   };
 
   return (
-    <nav className="fixed inset-x-0 bottom-0 z-40 border-t border-glass-border bg-[oklch(100%_0_0_/_0.86)] backdrop-blur-xl">
-      <div className="safe-bottom mx-auto flex max-w-md items-end px-2">
+    <nav className="fixed inset-x-0 bottom-0 z-40 mx-auto w-full max-w-[430px] px-3 pb-4 safe-bottom">
+      <div className="glass-card flex items-end justify-between rounded-[26px] px-1.5 py-1.5">
         {left.map(item)}
         <div className="flex w-[76px] shrink-0 justify-center">
           <VoiceMic />

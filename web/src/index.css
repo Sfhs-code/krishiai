@@ -97,6 +97,13 @@
     @apply rounded-lg;
   }
 
+  .glass-nav {
+    background: var(--glass);
+    border-color: var(--glass-border);
+    backdrop-filter: blur(24px) saturate(150%);
+    -webkit-backdrop-filter: blur(24px) saturate(150%);
+  }
+
   .solid-card {
     @apply rounded-lg border border-border bg-card shadow-glass;
   }
