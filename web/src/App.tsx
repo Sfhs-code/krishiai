@@ -18,6 +18,7 @@ const Diversify = lazy(() => import('./screens/tools/Diversify'));
 const Schemes = lazy(() => import('./screens/tools/Schemes'));
 const Soil = lazy(() => import('./screens/tools/Soil'));
 const Expenses = lazy(() => import('./screens/tools/Expenses'));
+const Residue = lazy(() => import('./screens/tools/Residue'));
 const SOS = lazy(() => import('./screens/tools/SOS'));
 const Advisories = lazy(() => import('./screens/tools/Advisories').then((m) => ({ default: m.Advisory })));
 
@@ -54,6 +55,7 @@ export default function App() {
                     <Route path="/tools/schemes" element={<Schemes />} />
                     <Route path="/tools/soil" element={<Soil />} />
                     <Route path="/tools/expenses" element={<Expenses />} />
+                    <Route path="/tools/residue" element={<Residue />} />
                     <Route path="/tools/sos" element={<SOS />} />
                     <Route path="/tools/yield" element={<Advisories kind="yield" />} />
                     <Route path="/tools/rotation" element={<Advisories kind="rotation" />} />

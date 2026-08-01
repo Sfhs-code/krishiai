@@ -161,6 +161,8 @@ export const hi = {
       documents: 'ज़रूरी कागज़',
       incomeVsExpense: 'आमदनी बनाम खर्च',
       inThousands: 'हज़ार रुपये में',
+      residueManager: 'अवशेष प्रबंधन',
+      residueManagerSub: 'जलाओ नहीं, कमाओ',
     },
 
     disease: {
@@ -228,6 +230,22 @@ export const hi = {
       low: 'कम',
       medium: 'मध्यम',
       good: 'अच्छा',
+    },
+
+    residue: {
+      title: 'फसल अवशेष प्रबंधन',
+      subtitle: 'पराली को आमदनी में बदलें — जलाना बंद करें',
+      whichCrop: 'कौन सी फसल कटी?',
+      harvestedArea: 'कटाई क्षेत्र',
+      getPlan: 'योजना बनाएं',
+      planning: 'योजना बन रही है…',
+      estResidue: 'अनुमानित अवशेष',
+      burningTitle: 'क्यों नहीं जलाना चाहिए',
+      machinery: 'मशीनरी और सब्सिडी',
+      sellTitle: 'अवशेष बेचें',
+      soilBenefit: 'मिट्टी को फायदा',
+      noKeyNote: 'अभी सामान्य योजना दिखाई जा रही है — अपनी फसल के अनुसार सलाह के लिए बैकएंड में Gemini API key जोड़ें।',
+      offlineNote: 'आप ऑफलाइन हैं, इसलिए यह सामान्य योजना है। अपने खेत के अनुसार सलाह के लिए इंटरनेट से जुड़ें।',
     },
 
     profile: {

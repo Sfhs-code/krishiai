@@ -16,6 +16,7 @@ import type {
   Scheme,
   Signal,
   SoilReading,
+  ResiduePlan,
   VerificationResult,
   WeatherBundle,
 } from './types';
@@ -136,6 +137,12 @@ export async function planDiversification(
   payload: { idleAcre: number; profile: FarmProfile; lang: LangCode; budget: string },
 ): Promise<DiversificationPlan> {
   return post<DiversificationPlan>('/ai/diversify', payload);
+}
+
+export async function planResidue(
+  payload: { cropName: string; acres: number; lang: LangCode; profile: FarmProfile },
+): Promise<ResiduePlan> {
+  return post<ResiduePlan>('/ai/residue', payload);
 }
 
 export async function matchSchemes(payload: {

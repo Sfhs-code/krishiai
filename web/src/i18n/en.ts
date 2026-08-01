@@ -152,6 +152,8 @@ export const en = {
       expenseTrackerSub: 'Profit & loss',
       organicAdvisor: 'Organic advisor',
       organicAdvisorSub: 'Compost & bio inputs',
+      residueManager: 'Residue manager',
+      residueManagerSub: 'Don\'t burn, earn',
       emergencySos: 'Emergency SOS',
       emergencySosSub: 'Helplines & vets',
       schemesTitle: 'Government schemes for you',
@@ -228,6 +230,22 @@ export const en = {
       low: 'Low',
       medium: 'Medium',
       good: 'Good',
+    },
+
+    residue: {
+      title: 'Post-harvest residue',
+      subtitle: 'Turn crop stubble into income — stop burning',
+      whichCrop: 'Which crop did you harvest?',
+      harvestedArea: 'Harvested area',
+      getPlan: 'Get residue plan',
+      planning: 'Building your plan…',
+      estResidue: 'Estimated residue',
+      burningTitle: 'Why you must not burn',
+      machinery: 'Machinery & subsidies',
+      sellTitle: 'Sell your residue',
+      soilBenefit: 'Benefit to your soil',
+      noKeyNote: 'Showing the built-in plan — add a Gemini API key to the backend for advice tailored to your exact harvest.',
+      offlineNote: 'You are offline, so this is the built-in plan. Connect for a plan tailored to your farm.',
     },
 
     profile: {

@@ -20,6 +20,7 @@ const TOOLS = [
   { emoji: '🌱', to: '/tools/diversify', key: 'landUse' },
   { emoji: '💵', to: '/tools/expenses', key: 'expenseTracker' },
   { emoji: '♻️', to: '/tools/organic', key: 'organicAdvisor' },
+  { emoji: '🚜', to: '/tools/residue', key: 'residueManager' },
   { emoji: '🚨', to: '/tools/sos', key: 'emergencySos' },
 ] as const;
 

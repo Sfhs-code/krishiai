@@ -143,6 +143,27 @@ export interface DiversificationPlan {
   speak: string;
 }
 
+export interface ResiduePlan {
+  summary: string;
+  estimatedResidue: string;
+  burningHarms: string[];
+  machinery: {
+    name: string;
+    emoji: string;
+    description: string;
+    subsidy: string;
+    whereToGet: string;
+  }[];
+  sellOptions: {
+    buyer: string;
+    emoji: string;
+    description: string;
+    estimatedRate: string;
+  }[];
+  soilBenefit: string[];
+  speak: string;
+}
+
 export interface ChatMessage {
   id: string;
   role: 'user' | 'assistant';

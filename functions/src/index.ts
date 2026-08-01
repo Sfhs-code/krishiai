@@ -272,6 +272,64 @@ app.post('/ai/diversify', async (req: Request, res: Response) => {
   }
 });
 
+/* ---------------------------------------------------------- post-harvest residue */
+
+app.post('/ai/residue', async (req: Request, res: Response) => {
+  try {
+    const { cropName = 'Paddy', acres = 2, lang = 'en', profile } = req.body ?? {};
+    const language = langName(String(lang));
+    const place = profile ? `${profile.district ?? 'Nashik'}, ${profile.state ?? 'Maharashtra'}` : 'Punjab, India';
+
+    const prompt = [
+      `You are a crop-residue management advisor. Stubble burning is illegal and causes severe air pollution across India, and you help farmers find profitable alternatives.`,
+      '',
+      'HARVEST DETAILS',
+      `- Crop just harvested: ${cropName}`,
+      `- Area: ${acres} acres`,
+      `- Location: ${place}`,
+      '',
+      'YOUR TASK',
+      '1. Estimate how much residue this harvest produces.',
+      '2. Give three concrete reasons not to burn it — include the actual environmental compensation fine and the nitrogen, phosphorus and potassium lost per tonne burnt.',
+      '3. Recommend in-situ machinery — Super Seeder, Happy Seeder, Smart Seeder, Mulcher, Baler, Rotavator — with the real subsidy available under the Crop Residue Management (CRM) scheme, and where a farmer hires it (Custom Hiring Centre, co-operative society).',
+      '4. Give ways to SELL the residue for actual money — biomass power plants, compressed bio-gas plants, paper mills, cattle fodder traders, mushroom growers — with realistic per-tonne rates.',
+      '',
+      'Return JSON matching exactly this shape:',
+      `{
+  "summary": string (two encouraging sentences to the farmer in ${language}),
+  "estimatedResidue": string (rough tonnes for this crop and acreage),
+  "burningHarms": string[] (3 short reasons not to burn, including the legal fine and nutrient loss),
+  "machinery": [{
+    "name": string,
+    "emoji": string (one emoji),
+    "description": string (what it does, 2 sentences),
+    "subsidy": string (actual subsidy % and scheme name),
+    "whereToGet": string (where to hire or buy)
+  }],
+  "sellOptions": [{
+    "buyer": string (who buys — biomass plant, CBG plant, paper mill, cattle fodder, mushroom unit),
+    "emoji": string (one emoji),
+    "description": string (how the farmer sells to them, 2 sentences),
+    "estimatedRate": string (realistic rate per tonne in rupees)
+  }],
+  "soilBenefit": string[] (2 lines on what incorporating residue does for soil),
+  "speak": string (3-sentence spoken summary in ${language})
+}`,
+      '',
+      'Rules:',
+      '- Every rupee figure must be realistic for India in 2026.',
+      '- Be practical and encouraging, never preachy. The farmer burns because it is cheap and fast — show them something better.',
+      `- Write ALL text values natively in ${language}. Keep scheme and machine names recognisable.`,
+      '- No markdown anywhere in the strings.',
+    ].join('\n');
+
+    const result = await generateJson<Record<string, unknown>>(prompt, { temperature: 0.5, maxOutputTokens: 2400 });
+    res.json(result);
+  } catch (err) {
+    handleError(res, err, 'residue');
+  }
+});
+
 /* ----------------------------------------------------------------- schemes */
 
 app.post('/ai/schemes', async (req: Request, res: Response) => {
