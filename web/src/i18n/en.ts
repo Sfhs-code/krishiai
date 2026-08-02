@@ -23,6 +23,7 @@ export const en = {
     cancel: 'Cancel',
     close: 'Close',
     loading: 'Loading…',
+    locationError: 'Unable to get location. Please check browser permissions or try again.',
 
     nav: {
       home: 'Home',
@@ -249,6 +250,7 @@ export const en = {
     },
 
     profile: {
+      useMyLocation: 'Use my GPS location ({{lat}}, {{lon}})',
       title: 'Profile',
       farmDetails: 'Farm details',
       location: 'Location',

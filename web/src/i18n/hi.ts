@@ -23,6 +23,7 @@ export const hi = {
     cancel: 'रद्द करें',
     close: 'बंद करें',
     loading: 'लोड हो रहा है…',
+    locationError: 'लोकेशन नहीं मिल सकी। कृपया ब्राउज़र सेटिंग्स में अनुमति दें या दोबारा कोशिश करें।',
 
     nav: {
       home: 'होम',
@@ -249,6 +250,7 @@ export const hi = {
     },
 
     profile: {
+      useMyLocation: 'मेरी जीपीएस लोकेशन ({{lat}}, {{lon}}) का उपयोग करें',
       title: 'प्रोफ़ाइल',
       farmDetails: 'खेत की जानकारी',
       location: 'स्थान',

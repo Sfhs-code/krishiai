@@ -171,7 +171,7 @@ export default function Profile() {
             className="press mt-4 flex w-full items-center justify-center gap-2 rounded-md border border-border bg-card py-2.5 text-sm font-semibold"
           >
             {locating ? <Loader2 size={15} className="animate-spin" aria-hidden /> : <MapPin size={15} aria-hidden />}
-            Use my GPS location ({profile.lat.toFixed(2)}, {profile.lon.toFixed(2)})
+            {t('profile.useMyLocation', { lat: profile.lat.toFixed(2), lon: profile.lon.toFixed(2) })}
           </button>
         </section>
       </Reveal>

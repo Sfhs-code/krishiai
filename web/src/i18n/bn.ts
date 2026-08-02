@@ -102,6 +102,7 @@ export const bn = {
       soilBenefit: 'মাটির উপকার',
     },
     profile: {
+      useMyLocation: 'আমার জিপিএস অবস্থান ({{lat}}, {{lon}}) ব্যবহার করুন',
       title: 'প্রোফাইল',
       farmDetails: 'খামারের বিবরণ',
       location: 'স্থান',

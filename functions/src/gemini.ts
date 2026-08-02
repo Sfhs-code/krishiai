@@ -23,7 +23,7 @@ export interface InlineImage {
 
 interface Part {
   text?: string;
-  inline_data?: { mime_type: string; data: string };
+  inlineData?: { mimeType: string; data: string };
 }
 
 export interface GenerateOptions {
@@ -47,7 +47,7 @@ export async function generate(prompt: string, opts: GenerateOptions = {}): Prom
 
   const parts: Part[] = [{ text: prompt }];
   if (opts.image) {
-    parts.push({ inline_data: { mime_type: opts.image.mimeType, data: opts.image.data } });
+    parts.push({ inlineData: { mimeType: opts.image.mimeType, data: opts.image.data } });
   }
   contents.push({ role: 'user', parts });
 

@@ -57,7 +57,7 @@ interface AppState {
 const Ctx = createContext<AppState | null>(null);
 
 export function AppProvider({ children }: { children: ReactNode }) {
-  const { i18n } = useTranslation();
+  const { i18n, t } = useTranslation();
   const [user, setUser] = useState<User | null>(null);
   const [authReady, setAuthReady] = useState(false);
   const [profile, setProfile] = useState<FarmProfile>(DEFAULT_PROFILE);
@@ -200,7 +200,10 @@ export function AppProvider({ children }: { children: ReactNode }) {
   );
 
   const useMyLocation = useCallback(async () => {
-    if (!('geolocation' in navigator)) return;
+    if (!('geolocation' in navigator)) {
+      alert(t('locationError', { defaultValue: 'Unable to get location. Please check browser permissions or try again.' }));
+      return;
+    }
     setLocating(true);
     try {
       const pos = await new Promise<GeolocationPosition>((resolve, reject) => {
@@ -210,13 +213,39 @@ export function AppProvider({ children }: { children: ReactNode }) {
           maximumAge: 10 * 60 * 1000,
         });
       });
-      updateProfile({ lat: pos.coords.latitude, lon: pos.coords.longitude });
-    } catch {
+      const lat = pos.coords.latitude;
+      const lon = pos.coords.longitude;
+      
+      const patch: Partial<FarmProfile> = { lat, lon };
+      
+      try {
+        const res = await fetch(
+          `https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lon}&format=json`,
+          { headers: { 'Accept-Language': 'en' } }
+        );
+        if (res.ok) {
+          const data = await res.json();
+          const addr = data.address;
+          if (addr) {
+            const village = addr.village || addr.town || addr.city || addr.suburb || addr.hamlet;
+            const district = addr.state_district || addr.county || addr.region;
+            if (village) patch.village = village;
+            if (district) patch.district = district.replace(/ district$/i, '').trim();
+            if (addr.state) patch.state = addr.state;
+          }
+        }
+      } catch (geoErr) {
+        console.error('Reverse geocode failed:', geoErr);
+      }
+      
+      updateProfile(patch);
+    } catch (err) {
+      alert(t('locationError', { defaultValue: 'Unable to get location. Please check permissions or try again.' }));
       /* permission denied or unavailable — keep the saved location */
     } finally {
       setLocating(false);
     }
-  }, [updateProfile]);
+  }, [updateProfile, t]);
 
   const value = useMemo<AppState>(
     () => ({

@@ -125,6 +125,7 @@ export const mr = {
       soilBenefit: 'मातीला फायदा',
     },
     profile: {
+      useMyLocation: 'माझी जीपीएस लोकेशन ({{lat}}, {{lon}}) वापरा',
       title: 'प्रोफाइल',
       farmDetails: 'शेत तपशील',
       location: 'स्थान',

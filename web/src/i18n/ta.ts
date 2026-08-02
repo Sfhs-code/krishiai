@@ -102,6 +102,7 @@ export const ta = {
       soilBenefit: 'மண்ணுக்கு நன்மை',
     },
     profile: {
+      useMyLocation: 'எனது ஜிபிஎஸ் இடத்தை பயன்படுத்துக ({{lat}}, {{lon}})',
       title: 'சுயவிவரம்',
       farmDetails: 'பண்ணை விவரங்கள்',
       location: 'இடம்',

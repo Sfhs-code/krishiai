@@ -102,6 +102,7 @@ export const pa = {
       soilBenefit: 'ਮਿੱਟੀ ਨੂੰ ਫਾਇਦਾ',
     },
     profile: {
+      useMyLocation: 'ਮੇਰੀ ਜੀਪੀਐਸ ਲੋਕੇਸ਼ਨ ({{lat}}, {{lon}}) ਵਰਤੋ',
       title: 'ਪ੍ਰੋਫਾਈਲ',
       farmDetails: 'ਖੇਤ ਵੇਰਵੇ',
       location: 'ਸਥਾਨ',
