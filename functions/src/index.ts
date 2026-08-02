@@ -388,3 +388,10 @@ function validGtin(digits: string): boolean {
   const sum = body.reduce((acc, d, i) => acc + d * (i % 2 === 0 ? 3 : 1), 0);
   return (10 - (sum % 10)) % 10 === check;
 }
+
+if (process.env.RENDER === 'true' || process.env.RENDER) {
+  const port = process.env.PORT || 8080;
+  app.listen(port, () => {
+    console.log(`Server listening on port ${port}`);
+  });
+}
